@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Finder Germany</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    p { color: var(--muted); }
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+    input, select, button {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px;
+      background: #0b1220;
+      color: var(--text);
+    }
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: #052e16;
+      border: none;
+      font-weight: bold;
+    }
+    button.secondary {
+      background: #2563eb;
+      color: #dbeafe;
+      margin-top: 10px;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .row-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .filters-block {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 3px solid #1d4ed8;
+      border-top-color: #93c5fd;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      display: none;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error {
+      color: var(--danger);
+      margin-top: 10px;
+      min-height: 20px;
+    }
+    .count {
+      margin-bottom: 12px;
+      color: #86efac;
+      font-weight: bold;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      padding: 10px;
+      font-size: 14px;
+      vertical-align: top;
+    }
+    a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    .small-btn {
+      padding: 8px 10px;
+      font-size: 13px;
+      background: #7c3aed;
+      color: #ede9fe;
+      border-radius: 6px;
+      border: none;
+      width: auto;
+      cursor: pointer;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 16px;
+    }
+    .modal {
+      width: min(720px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .modal-title {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+    .modal textarea {
+      width: 100%;
+      min-height: 220px;
+      background: #0b1220;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      resize: vertical;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .modal-spinner {
+      width: 18px;
+      height: 18px;
+      border: 3px solid #1d4ed8;
+      border-top-color: #93c5fd;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      display: none;
+    }
+    .muted-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Lead Finder Germany</h1>
+      <p>Поиск бизнесов без сайта через Google Places API.</p>
+
+      <div class="grid">
+        <div>
+          <label for="city">Город</label>
+          <input id="city" placeholder="Например: Berlin">
+        </div>
+
+        <div>
+          <label for="category">Категория</label>
+          <select id="category">
+            <option value="barbershop">Barbershop</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="friseur">Friseur</option>
+            <option value="kosmetikstudio">Kosmetikstudio</option>
+            <option value="doner">Döner</option>
+            <option value="handwerker">Handwerker</option>
+            <option value="immobilienmakler">Immobilienmakler</option>
+            <option value="physiotherapeut">Physiotherapeut</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="row-actions">
+        <button id="searchBtn">Найти</button>
+        <div id="spinner" class="spinner" aria-hidden="true"></div>
+      </div>
+
+      <div class="filters-block">
+        <div class="grid">
+          <div>
+            <label for="minRating">Минимальный рейтинг</label>
+            <select id="minRating">
+              <option value="">Любой</option>
+              <option value="3">3+</option>
+              <option value="3.5">3.5+</option>
+              <option value="4">4+</option>
+              <option value="4.5">4.5+</option>
+            </select>
+          </div>
+          <div>
+            <label>Фильтр по контактам</label>
+            <label class="checkbox-row" for="onlyWithPhone">
+              <input id="onlyWithPhone" type="checkbox" checked>
+              Только с телефоном
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="card">
+      <div class="count" id="count">Найдено: 0</div>
+      <button id="downloadBtn" class="secondary" disabled>Скачать CSV</button>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Название</th>
+              <th>Адрес</th>
+              <th>Телефон</th>
+              <th>Рейтинг</th>
+              <th>Отзывы</th>
+              <th>Google Maps</th>
+              <th>Письмо</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody">
+            <tr><td colspan="7" style="color:#94a3b8;">Результаты появятся здесь</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="emailModalOverlay">
+    <div class="modal">
+      <h3 class="modal-title" id="emailModalTitle">Генерация письма</h3>
+      <div class="grid">
+        <div>
+          <label for="emailLanguage">Язык</label>
+          <select id="emailLanguage">
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button id="generateEmailBtn">Сгенерировать</button>
+        <div id="emailSpinner" class="modal-spinner" aria-hidden="true"></div>
+      </div>
+      <div class="muted-note" id="emailStatus"></div>
+      <textarea id="emailText" placeholder="Здесь появится текст письма..."></textarea>
+      <div class="modal-actions">
+        <button id="copyEmailBtn" class="secondary">Скопировать</button>
+        <button id="closeEmailBtn">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const searchBtn = document.getElementById("searchBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const spinner = document.getElementById("spinner");
+    const errorEl = document.getElementById("error");
+    const countEl = document.getElementById("count");
+    const resultsBody = document.getElementById("resultsBody");
+    const minRatingEl = document.getElementById("minRating");
+    const onlyWithPhoneEl = document.getElementById("onlyWithPhone");
+    const categoryEl = document.getElementById("category");
+    const emailModalOverlay = document.getElementById("emailModalOverlay");
+    const emailModalTitle = document.getElementById("emailModalTitle");
+    const emailLanguageEl = document.getElementById("emailLanguage");
+    const generateEmailBtn = document.getElementById("generateEmailBtn");
+    const emailSpinner = document.getElementById("emailSpinner");
+    const emailTextEl = document.getElementById("emailText");
+    const copyEmailBtn = document.getElementById("copyEmailBtn");
+    const closeEmailBtn = document.getElementById("closeEmailBtn");
+    const emailStatusEl = document.getElementById("emailStatus");
+
+    let rawResults = [];
+    let filteredResults = [];
+    let selectedLead = null;
+
+    function setLoading(isLoading) {
+      searchBtn.disabled = isLoading;
+      spinner.style.display = isLoading ? "inline-block" : "none";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function renderResults(leads) {
+      if (!leads.length) {
+        resultsBody.innerHTML = '<tr><td colspan="7" style="color:#94a3b8;">Ничего не найдено</td></tr>';
+        return;
+      }
+
+      resultsBody.innerHTML = leads.map(lead => `
+        <tr>
+          <td>${escapeHtml(lead.name)}</td>
+          <td>${escapeHtml(lead.address)}</td>
+          <td>${escapeHtml(lead.phone)}</td>
+          <td>${escapeHtml(lead.rating)}</td>
+          <td>${escapeHtml(lead.reviews_count)}</td>
+          <td><a href="${escapeHtml(lead.google_maps_url)}" target="_blank" rel="noopener noreferrer">Открыть</a></td>
+          <td><button class="small-btn write-email-btn" data-place="${escapeHtml(lead.google_maps_url)}">✉ Написать</button></td>
+        </tr>
+      `).join("");
+    }
+
+    function applyFilters() {
+      const minRatingValue = minRatingEl.value ? Number(minRatingEl.value) : null;
+      const onlyWithPhone = onlyWithPhoneEl.checked;
+
+      filteredResults = rawResults.filter((lead) => {
+        if (onlyWithPhone && !String(lead.phone ?? "").trim()) {
+          return false;
+        }
+
+        if (minRatingValue !== null) {
+          const rating = Number(lead.rating);
+          if (!Number.isFinite(rating)) {
+            return false;
+          }
+          if (rating < minRatingValue) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      countEl.textContent = `Найдено: ${filteredResults.length}`;
+      renderResults(filteredResults);
+      downloadBtn.disabled = filteredResults.length === 0;
+    }
+
+    function downloadCsv() {
+      if (!filteredResults.length) return;
+
+      const headers = ["name", "address", "phone", "rating", "reviews_count", "google_maps_url"];
+      const rows = filteredResults.map(item => headers.map(key => {
+        const raw = String(item[key] ?? "");
+        return `"${raw.replaceAll('"', '""')}"`;
+      }).join(","));
+
+      const csv = [headers.join(","), ...rows].join("\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "leads_without_website.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function setEmailLoading(isLoading) {
+      generateEmailBtn.disabled = isLoading;
+      emailSpinner.style.display = isLoading ? "inline-block" : "none";
+    }
+
+    function getSelectedCategoryLabel() {
+      const selectedOption = categoryEl.options[categoryEl.selectedIndex];
+      return selectedOption ? selectedOption.text : "business";
+    }
+
+    function openEmailModalByLead(lead) {
+      selectedLead = lead;
+      emailModalTitle.textContent = lead.name || "Без названия";
+      emailTextEl.value = "";
+      emailStatusEl.textContent = "";
+      emailLanguageEl.value = "de";
+      emailModalOverlay.style.display = "flex";
+    }
+
+    function closeEmailModal() {
+      emailModalOverlay.style.display = "none";
+      selectedLead = null;
+      setEmailLoading(false);
+    }
+
+    async function generateEmail() {
+      if (!selectedLead) return;
+      emailStatusEl.textContent = "";
+      setEmailLoading(true);
+
+      const payload = {
+        name: selectedLead.name || "",
+        address: selectedLead.address || "",
+        category: getSelectedCategoryLabel(),
+        language: emailLanguageEl.value
+      };
+
+      try {
+        const response = await fetch("/generate-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Ошибка генерации письма");
+        }
+        emailTextEl.value = data.email_text || "";
+      } catch (err) {
+        emailStatusEl.textContent = err.message || "Не удалось сгенерировать письмо";
+      } finally {
+        setEmailLoading(false);
+      }
+    }
+
+    async function copyEmailText() {
+      if (!emailTextEl.value.trim()) return;
+      try {
+        await navigator.clipboard.writeText(emailTextEl.value);
+        emailStatusEl.textContent = "Скопировано в буфер обмена";
+      } catch (_) {
+        emailStatusEl.textContent = "Не удалось скопировать";
+      }
+    }
+
+    async function searchLeads() {
+      errorEl.textContent = "";
+      setLoading(true);
+      downloadBtn.disabled = true;
+
+      const city = document.getElementById("city").value.trim();
+      const category = document.getElementById("category").value;
+
+      if (!city) {
+        setLoading(false);
+        errorEl.textContent = "Введите город.";
+        return;
+      }
+
+      try {
+        const response = await fetch("/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ city, category })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Ошибка запроса");
+        }
+
+        rawResults = data.leads || [];
+        applyFilters();
+      } catch (err) {
+        rawResults = [];
+        filteredResults = [];
+        countEl.textContent = "Найдено: 0";
+        renderResults([]);
+        downloadBtn.disabled = true;
+        errorEl.textContent = err.message || "Неизвестная ошибка";
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    searchBtn.addEventListener("click", searchLeads);
+    downloadBtn.addEventListener("click", downloadCsv);
+    minRatingEl.addEventListener("change", applyFilters);
+    onlyWithPhoneEl.addEventListener("change", applyFilters);
+    resultsBody.addEventListener("click", (event) => {
+      const button = event.target.closest(".write-email-btn");
+      if (!button) return;
+      const mapsUrl = button.dataset.place;
+      const lead = filteredResults.find((item) => item.google_maps_url === mapsUrl);
+      if (!lead) return;
+      openEmailModalByLead(lead);
+    });
+    generateEmailBtn.addEventListener("click", generateEmail);
+    copyEmailBtn.addEventListener("click", copyEmailText);
+    closeEmailBtn.addEventListener("click", closeEmailModal);
+    emailModalOverlay.addEventListener("click", (event) => {
+      if (event.target === emailModalOverlay) {
+        closeEmailModal();
+      }
+    });
+  </script>
+</body>
+</html>
